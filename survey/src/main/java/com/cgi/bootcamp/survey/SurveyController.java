@@ -1,7 +1,5 @@
 package com.cgi.bootcamp.survey;
 
-import javax.ws.rs.Path;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +13,6 @@ import com.cgi.bootcamp.survey.domain.SurveyRepository;
 
 @RestController
 @RefreshScope
-@Path("/survey")
 public class SurveyController {
 	
 	@Autowired

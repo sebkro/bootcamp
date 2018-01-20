@@ -1,0 +1,13 @@
+---
+spring:
+    profiles: local
+survey:
+  ribbon:
+    listOfServers: localhost:9001
+ribbon:
+  eureka:
+   enabled: false
+
+---
+
+

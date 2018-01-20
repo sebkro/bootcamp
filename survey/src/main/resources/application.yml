@@ -1,2 +1,10 @@
 ---
 
+spring:
+    profiles: local
+server:
+    port: 9001
+
+---
+
+

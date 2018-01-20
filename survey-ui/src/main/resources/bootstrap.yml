@@ -1,0 +1,13 @@
+---
+
+spring:
+  application:
+    name: survey-ui
+
+management:
+  security:
+    enabled: false
+
+security:
+  basic:
+    enabled: false
