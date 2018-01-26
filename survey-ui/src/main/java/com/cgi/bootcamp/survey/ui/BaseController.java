@@ -33,6 +33,7 @@ public class BaseController {
 	
 	private static final String BASE_ATTRIBUTES = "baseAttributes";
 	private static final String TEMPLATE_BASE = "base";
+	private static final String TEMPLATE_FIELDS = "fields";
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
 
 	@GetMapping()
@@ -53,6 +54,11 @@ public class BaseController {
 			survey.setCreatorEmail(base.getCreatorEmail());
 			survey.setInvitationText(base.getInvitationText());
 			survey.setHeaderText(base.getHeaderText());
+			try {
+				survey.setNumberOfQuestions(Integer.parseInt(base.getNumberOfQuestionsStr()));
+			}catch(NumberFormatException ex) {
+				LOGGER.warn("{} is not a number.", base.getNumberOfQuestionsStr());
+			}
 			if (base.getEmails() != null) {
 				Set<String> invitedEmails = Arrays.stream(base.getEmails().split("\n"))
 						.map(elem -> elem.trim())
@@ -60,8 +66,9 @@ public class BaseController {
 						.collect(Collectors.toSet());
 				survey.setInvitedEmails(invitedEmails);
 			}
+			LOGGER.info("SURVEY, general part: {}", survey);
 			surveyClient.store(survey);
-			return TEMPLATE_BASE; //TODO hier dann auf die Seite zur Anlage der Fragen
+			return "redirect:"+TEMPLATE_FIELDS+"/"+survey.getId(); //TODO hier dann auf die Seite zur Anlage der Fragen
 		}
 	}
 

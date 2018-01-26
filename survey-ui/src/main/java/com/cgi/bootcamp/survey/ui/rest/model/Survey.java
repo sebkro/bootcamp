@@ -18,6 +18,7 @@ public class Survey {
 	private List<Page> pages;
 	private String creatorEmail;
 	private Set<String> invitedEmails;
+	private int numberOfQuestions;
 	
 
 }
