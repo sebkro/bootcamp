@@ -2,7 +2,7 @@
 
 spring:
   application:
-    name: survey
+    name: cgi-bootcamp-survey
 
 management:
   security:

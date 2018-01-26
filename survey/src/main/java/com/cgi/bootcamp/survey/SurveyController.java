@@ -1,6 +1,7 @@
 package com.cgi.bootcamp.survey;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,12 @@ import com.cgi.bootcamp.survey.domain.SurveyRepository;
 @RefreshScope
 public class SurveyController {
 	
+	@Value("${info.value:no value}")
+	private String special;
+
+	@Value("${info.bla:no value}")
+	private String bla;
+	
 	@Autowired
 	private SurveyRepository repository;
 	
@@ -26,6 +33,16 @@ public class SurveyController {
 	@RequestMapping(method=RequestMethod.GET, produces="application/json", path="/{id}")
 	public Survey getValue(@PathVariable(name="id") String id) {
 		return repository.findOneById(id);
-	}	
+	}
+
+	@RequestMapping(method=RequestMethod.GET, produces="application/json", path="/congig/{value}")
+	public String getConfig(@PathVariable(name="value") String value) {
+		if ("bla".equals(value)) {
+			return bla;
+		}
+		return special;
+	}
+	
+	
 
 }

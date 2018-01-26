@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.cgi.bootcamp.survey.ui.rest.model.Survey;
 
-@FeignClient(name="survey", url="${survey.ribbon.listOfServers}")
+@FeignClient(name="cgi-bootcamp-survey")
 public interface SurveyClient {
 	
 	@RequestMapping(method=RequestMethod.GET, path="/{id}")

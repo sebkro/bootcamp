@@ -1,0 +1,10 @@
+---
+applications:
+- name: cgi-bootcamp-survey-ui
+  memory: 1G
+  instances: 1
+  buildpack: java_buildpack
+  path: ./target/survey-ui-0.0.1-SNAPSHOT.jar
+  random-route: true
+  services:
+   - keyvalue-service-registry
