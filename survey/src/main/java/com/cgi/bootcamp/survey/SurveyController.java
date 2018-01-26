@@ -1,5 +1,7 @@
 package com.cgi.bootcamp.survey;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -16,6 +18,9 @@ import com.cgi.bootcamp.survey.domain.SurveyRepository;
 @RefreshScope
 public class SurveyController {
 	
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(SurveyController.class);
+	
 	@Value("${info.value:no value}")
 	private String special;
 
@@ -27,6 +32,7 @@ public class SurveyController {
 	
 	@RequestMapping(method=RequestMethod.POST, produces="application/json", path="", consumes="application/json")
 	public void storeValue(@RequestBody Survey survey) {
+		LOGGER.info("store survey");
 		repository.save(survey);
 	}	
 
