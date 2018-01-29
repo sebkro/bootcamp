@@ -48,12 +48,6 @@
 				    <div class="invalid-feedback"  th:if="${#fields.hasErrors('emails')}" th:errors="*{emails}">E-Mails Error</div>
 			    </div>
 		    </div>
-			<div class="form-row">
-				<div class="col form-group">
-				    <label for="numberOfQuestionsStr">Wie viele Frage sind f&uuml;r den Survey vorgesehen? (Bitte ganze Zahl eintragen.)</label>
-				    <input id="numberOfQuestionsStr" class="form-control" rows="1" th:field="*{numberOfQuestionsStr}"></input>
-			    </div>
-		    </div>
 			<button class="btn btn-primary" type="submit">Weiter</button>
 		</form>
 	</div>

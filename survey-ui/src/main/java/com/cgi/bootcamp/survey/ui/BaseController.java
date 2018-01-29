@@ -1,6 +1,8 @@
 package com.cgi.bootcamp.survey.ui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.bootcamp.survey.ui.models.SurveyBaseAttributes;
 import com.cgi.bootcamp.survey.ui.rest.SurveyClient;
+import com.cgi.bootcamp.survey.ui.rest.model.PageElement;
 import com.cgi.bootcamp.survey.ui.rest.model.Survey;
 
 @Controller
@@ -54,11 +57,6 @@ public class BaseController {
 			survey.setCreatorEmail(base.getCreatorEmail());
 			survey.setInvitationText(base.getInvitationText());
 			survey.setHeaderText(base.getHeaderText());
-			try {
-				survey.setNumberOfQuestions(Integer.parseInt(base.getNumberOfQuestionsStr()));
-			}catch(NumberFormatException ex) {
-				LOGGER.warn("{} is not a number.", base.getNumberOfQuestionsStr());
-			}
 			if (base.getEmails() != null) {
 				Set<String> invitedEmails = Arrays.stream(base.getEmails().split("\n"))
 						.map(elem -> elem.trim())
@@ -66,6 +64,8 @@ public class BaseController {
 						.collect(Collectors.toSet());
 				survey.setInvitedEmails(invitedEmails);
 			}
+			List<PageElement> elements = new ArrayList<PageElement>();
+			survey.setPageElements(elements);
 			LOGGER.info("SURVEY, general part: {}", survey);
 			surveyClient.store(survey);
 			return "redirect:"+TEMPLATE_FIELDS+"/"+survey.getId(); //TODO hier dann auf die Seite zur Anlage der Fragen

@@ -4,6 +4,13 @@
 <title>CGI Survey</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="/bootstrap/bootstrap.min.css" />
+
+<script>
+function done(){
+    document.form1.action ="'/fields/'+${fieldsAttributes.surveyId}";
+}
+</script>
+
 </head>
 <body>
 	<div class="container">
@@ -15,15 +22,48 @@
 				<p>Hier werden die Fragen f&uuml;r die Umfrage deklariert.</p>
 			</div>
 		</div>
-		<form action="#" th:action="@{/fields}" th:object="${fieldsAttributes}" method="post">
+
+					<label for="title">Titel deiner Umfrage:</label>
+					<div th:text="*{fieldsAttributes.title}">YTitel</div>
+
+
+		<div>Die bisherigen Fragen</div>
+
+			<table border="1">
+	    	  <tr>
+    	    	<th>Id</th>
+    	    	<th>Frage</th>
+   		     	<th>Typ</th>
+        		<th>Beispiel</th>
+	     	 </tr>
+    	  	<tr th:each="elem : ${fieldsAttributes.pageElements}">
+        		<td th:text="${elem.id}">XYZXYZXYZ</td>
+        		<td th:text="${elem.text}">Onions</td>
+  	      		<td th:text="${elem.type}">2.41</td>
+    	    	<td >xxx</td>
+	    	</tr>
+    	   </table>
+			
+	Bitte hier die n&auml;chste Frage eingeben:
+		<form id="form1" action="#" th:action="@{/fields}+'/'+${fieldsAttributes.surveyId}" th:object="${fieldsAttributes}" method="post">
 			<div class="form-row">
 				<div class="form-group col-md-6">
-					<label for="title">Titel deiner Umfrage:</label>
-					<input id="title" type="text" class="form-control" placeholder="The title" th:field="*{title}" th:errorclass="is-invalid"/>
-					<div th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="invalid-feedback">Titel Fehler</div>
+					<label for="Frage">Frage:</label>
+					<input id="question" type="text" class="form-control" placeholder="question" th:field="*{question}" th:errorclass="is-invalid"/>
+					<div th:if="${#fields.hasErrors('question')}" th:errors="*{question}" class="invalid-feedback">Frage Fehler</div>
 				</div>
 			</div>
+						
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="example">Beispiel:</label>
+					<input id="example" type="text" class="form-control" placeholder="example" th:field="*{example}" th:errorclass="is-invalid"/>
+					<div th:if="${#fields.hasErrors('example')}" th:errors="*{example}" class="invalid-feedback">Beispiel Fehler</div>
+				</div>
+			</div>
+			
 			<button class="btn btn-primary" type="submit">Weiter</button>
+			<button class="btn btn-primary" type="submit" onclick="done();">Fertig</button>
 		</form>
 	</div>
 </body>

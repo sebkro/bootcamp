@@ -15,10 +15,9 @@ public class Survey {
 	private String title;
 	private String headerText;
 	private String invitationText;
-	private List<Page> pages;
+	private List<PageElement> pageElements;
 	private String creatorEmail;
 	private Set<String> invitedEmails;
-	private int numberOfQuestions;
 	
 
 }

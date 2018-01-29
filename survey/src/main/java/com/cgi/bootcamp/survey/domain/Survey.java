@@ -1,5 +1,6 @@
 package com.cgi.bootcamp.survey.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -15,9 +16,13 @@ public class Survey {
 	private String title;
 	private String headerText;
 	private String invitationText;
-	private List<Page> pages;
+	private List<PageElement> pageElements;
 	private String creatorEmail;
 	private Set<String> invitedEmails;
-	
 
+	// TODO remove?
+	public Survey() {
+		pageElements = new ArrayList<PageElement>();
+	}
+	
 }
