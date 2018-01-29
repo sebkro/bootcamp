@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.bootcamp.survey.ui.models.SurveyBaseAttributes;
@@ -46,8 +47,9 @@ public class BaseController {
 	}
 
 	@PostMapping()
-	public String greetingSubmit(@ModelAttribute(name = BASE_ATTRIBUTES) @Valid SurveyBaseAttributes base, BindingResult bindungResult) {
-		LOGGER.info("base Submit with {}", base);
+	public String greetingSubmit(@ModelAttribute(name = BASE_ATTRIBUTES) @Valid SurveyBaseAttributes base, BindingResult bindungResult,
+			@RequestHeader("Authorization") String auth) {
+		LOGGER.info("base Submit with {} and auth {}", base, auth);
 		if (bindungResult.hasErrors()) {
 			return TEMPLATE_BASE;
 		} else {
@@ -67,8 +69,8 @@ public class BaseController {
 			List<PageElement> elements = new ArrayList<PageElement>();
 			survey.setPageElements(elements);
 			LOGGER.info("SURVEY, general part: {}", survey);
-			surveyClient.store(survey);
-			return "redirect:"+TEMPLATE_FIELDS+"/"+survey.getId(); //TODO hier dann auf die Seite zur Anlage der Fragen
+			surveyClient.store(survey, auth);
+			return "redirect:"+TEMPLATE_FIELDS+"/"+survey.getId();
 		}
 	}
 

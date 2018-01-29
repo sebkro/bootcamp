@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.bootcamp.survey.ui.models.SurveyFieldsAttributes;
@@ -39,8 +40,8 @@ public class FieldsController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FieldsController.class);
 
 	@GetMapping()
-	public String greetingForm(Model model, @PathVariable("id") String id) {
-		Survey survey = surveyClient.getValue(id);
+	public String greetingForm(Model model, @PathVariable("id") String id, @RequestHeader("Authorization") String auth) {
+		Survey survey = surveyClient.getValue(id, auth);
 		SurveyFieldsAttributes attributes = new SurveyFieldsAttributes();
 		attributes.setSurveyId(survey.getId());
 		attributes.setTitle(survey.getTitle());
