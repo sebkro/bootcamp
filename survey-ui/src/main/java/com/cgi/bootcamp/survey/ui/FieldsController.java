@@ -1,7 +1,6 @@
 package com.cgi.bootcamp.survey.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -12,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.bootcamp.survey.ui.models.SurveyFieldsAttributes;
@@ -24,10 +23,8 @@ import com.cgi.bootcamp.survey.ui.rest.SurveyClient;
 import com.cgi.bootcamp.survey.ui.rest.model.PageElement;
 import com.cgi.bootcamp.survey.ui.rest.model.Survey;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
-
 @Controller
-@RequestMapping("/fields/{id}")
+@RequestMapping(value= {"/fields/{id}", "/fields/{id}?state={state}"})
 public class FieldsController {
 	
 	@Autowired
@@ -40,8 +37,10 @@ public class FieldsController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FieldsController.class);
 
 	@GetMapping()
-	public String greetingForm(Model model, @PathVariable("id") String id, @RequestHeader("Authorization") String auth) {
-		Survey survey = surveyClient.getValue(id, auth);
+	public String greetingForm(Model model, @PathVariable("id") String id, @CookieValue("Authentication") String authCookie) {//, @RequestHeader("Authorization") String auth) {
+		LOGGER.info("GET with cookie 'Authentication': {}", authCookie);
+		String auth = authCookie;
+		Survey survey = surveyClient.getValue(id, "Bearer "+auth);
 		SurveyFieldsAttributes attributes = new SurveyFieldsAttributes();
 		attributes.setSurveyId(survey.getId());
 		attributes.setTitle(survey.getTitle());
@@ -50,15 +49,19 @@ public class FieldsController {
 		return TEMPLATE_FIELDS;
 	}
 
+
 	@PostMapping()
-	public String greetingSubmit(@ModelAttribute(name = FIELDS_ATTRIBUTES) @Valid SurveyFieldsAttributes fields, BindingResult bindungResult, @PathVariable("id") String id) {
+	public String greetingSubmit(@ModelAttribute(name = FIELDS_ATTRIBUTES) @Valid SurveyFieldsAttributes fields, BindingResult bindungResult, 
+			@PathVariable("id") String id, 
+			@CookieValue("Authentication") String authCookie, 
+			@PathVariable("state") Optional<String> state) {
 		LOGGER.info("base Submit with {}", fields);
 		if (bindungResult.hasErrors()) {
 			LOGGER.error("Number of bind errors: ", bindungResult.getErrorCount());
 			return TEMPLATE_FIELDS;
 		} else {
 			LOGGER.info("HERE");
-			Survey survey = surveyClient.getValue(id);
+			Survey survey = surveyClient.getValue(id, "Bearer "+authCookie);
 //			SurveyFieldsAttributes attributes = new SurveyFieldsAttributes();
 			fields.setSurveyId(survey.getId());
 			fields.setTitle(survey.getTitle());
@@ -70,19 +73,27 @@ public class FieldsController {
 			e.setId(UUID.randomUUID().toString());
 			e.setSurveyId(survey.getId());
 			e.setText(fields.getQuestion());
-			e.setType(PageElement.PageElementType.TEXTBLOCK);
+			e.setType(PageElement.PageElementType.QUESTION_FREETEXT);
 			survey.getPageElements().add(e);
 			LOGGER.info("Created page element", e);
 			
 			fields.setPageElements(survey.getPageElements());;
 			fields.setQuestion("");
+			fields.setExample("");
 			
 			//LOGGER.info("Fields size, : {}", fields.getElems().size());
-			surveyClient.store(survey);
-			// For unknown reasons I had to add a / here. (this was not necessary in BaseController. WHY?)
-			String whereTo = "redirect:/"+TEMPLATE_OVERVIEW+"/"+survey.getId();
-			//LOGGER.info("Redirecting to {}.", whereTo);
-			return TEMPLATE_FIELDS; //whereTo;
+			surveyClient.store(survey, "Bearer "+authCookie);
+			String whereTo = TEMPLATE_FIELDS;
+			if(state.isPresent()) {
+				if("done".equals(state.get())) {
+					// For unknown reasons I had to add a / here. (this was not necessary in BaseController. WHY?)
+					whereTo = "redirect:/"+TEMPLATE_OVERVIEW+"/"+survey.getId();
+					LOGGER.info("Redirecting to {}.", whereTo);
+				} else {
+					LOGGER.warn("Path contained unknown state: {}", state.get());
+				}
+			}
+			return whereTo;
 		}
 	}
 

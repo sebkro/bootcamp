@@ -11,16 +11,15 @@ public class SurveyBaseAttributes {
 	private String title;
 	private String headerText;
 	private String invitationText;
+	private String token;
 	
-	// TODO specify validator (Integer, probably one or two digit, not more )
-	private String numberOfQuestionsStr;
 
-	public String getNumberOfQuestionsStr() {
-		return numberOfQuestionsStr;
+	public String getToken() {
+		return token;
 	}
 
-	public void setNumberOfQuestionsStr(String numberOfQuestionsStr) {
-		this.numberOfQuestionsStr = numberOfQuestionsStr;
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	@javax.validation.constraints.Pattern(regexp = EmailsConstraintValidator.VALID_EMAIL_ADDRESS_REGEX, message="Bitte gebe eine gültige E-Mail-Adresse ein.")
@@ -48,7 +47,7 @@ public class SurveyBaseAttributes {
 	@Override
 	public String toString() {
 		return "SurveyBaseAttributes [title=" + title + ", headerText=" + headerText + ", invitationText="
-				+ invitationText + ", creatorEmail=" + creatorEmail + ", emails=" + emails + ", numberOfQuestionsStr=" + numberOfQuestionsStr + "]";
+				+ invitationText + ", creatorEmail=" + creatorEmail + ", emails=" + emails + "]";
 	}
 
 	public String getInvitationText() {

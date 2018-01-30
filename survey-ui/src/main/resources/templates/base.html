@@ -48,6 +48,13 @@
 				    <div class="invalid-feedback"  th:if="${#fields.hasErrors('emails')}" th:errors="*{emails}">E-Mails Error</div>
 			    </div>
 		    </div>
+			<div class="form-row">
+				<div class="col form-group">
+				    <label for="token">Token (you should have one.)</label>
+				    <input id="token" class="form-control" rows="1" th:field="*{token}" th:errorclass="is-invalid"></input>
+				    <div class="invalid-feedback"  th:if="${#fields.hasErrors('token')}" th:errors="*{token}">Token Error</div>
+			    </div>
+		    </div>
 			<button class="btn btn-primary" type="submit">Weiter</button>
 		</form>
 	</div>

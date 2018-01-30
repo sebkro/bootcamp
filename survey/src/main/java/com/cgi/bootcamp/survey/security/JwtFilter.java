@@ -36,6 +36,9 @@ public class JwtFilter extends GenericFilterBean {
 	private String issuer;
 	
 	private JWTVerifier verifier;
+
+	// TODO? configuration file?
+	boolean dontFilter = false;
 	
 	public JwtFilter(String publicKey, String issuer) {
 		this.publicKey = publicKey;
@@ -54,22 +57,26 @@ public class JwtFilter extends GenericFilterBean {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
 			throws IOException, ServletException {
-		
-		HttpServletRequest request = (HttpServletRequest) req;
-		String authHeader = request.getHeader("Authorization");
-		if (StringUtils.isNoneBlank(authHeader) && authHeader.startsWith("Bearer ")) {
-			String token = authHeader.substring(7);
-			try {
-				verifier.verify(token);
-				filterChain.doFilter(req, res);
-			} catch (JWTVerificationException e) {
-				LOGGER.info("invalid Token");
-				((HttpServletResponse) res).sendError(403);
-			}
-			
+
+		if(dontFilter) {
+			filterChain.doFilter(req, res);
 		} else {
-			LOGGER.info("missing Token");
-			((HttpServletResponse) res).sendError(401);
+			HttpServletRequest request = (HttpServletRequest) req;
+			String authHeader = request.getHeader("Authorization");
+			if (StringUtils.isNoneBlank(authHeader) && authHeader.startsWith("Bearer ")) {
+				String token = authHeader.substring(7);
+				try {
+					verifier.verify(token);
+					filterChain.doFilter(req, res);
+				} catch (JWTVerificationException e) {
+					LOGGER.info("invalid Token: {}", token);
+					((HttpServletResponse) res).sendError(403);
+				}
+			
+			} else {
+				LOGGER.info("missing Token");
+				((HttpServletResponse) res).sendError(401);
+			}
 		}
 	}
 	

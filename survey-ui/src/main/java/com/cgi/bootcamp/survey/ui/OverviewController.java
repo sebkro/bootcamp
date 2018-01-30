@@ -39,7 +39,7 @@ public class OverviewController {
 
 	@GetMapping()
 	public String greetingForm(Model model, @PathVariable("id") String id) {
-		Survey survey = surveyClient.getValue(id);
+		Survey survey = surveyClient.getValue(id, "");
 		SurveyFieldsAttributes attributes = new SurveyFieldsAttributes();
 		attributes.setTitle(survey.getTitle());
 		List<PageElement> pageElements = survey.getPageElements();
