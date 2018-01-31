@@ -3,6 +3,7 @@ package com.cgi.bootcamp.survey.ui;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cgi.bootcamp.survey.ui.models.SurveyBaseAttributes;
@@ -54,9 +54,14 @@ public class BaseController {
 			@ModelAttribute(name = BASE_ATTRIBUTES) @Valid SurveyBaseAttributes base, 
 			HttpServletResponse response,
 			BindingResult bindungResult, 
-			@CookieValue("Authentication") String auth) {
+			@CookieValue("Authentication") Optional<String> authCookieOld) {
 //			@RequestHeader("Authorization") String auth) {
 		
+		String auth = null;
+		
+		if(authCookieOld.isPresent()) {
+			auth = authCookieOld.get();
+		}
 		
 		LOGGER.info("Base POST with (old) authCookie {}.", auth);
 		if(base.getToken() != null && base.getToken().length() > 5) {
@@ -65,6 +70,7 @@ public class BaseController {
 			authCookie.setDomain("localhost"); // TODO this doesn't generalize well
 			authCookie.setPath("/");
 			response.addCookie(authCookie);
+			auth = base.getToken();
 			LOGGER.info("Base POST with new auth {}.", base.getToken());
 			
 		}else {
